@@ -3,5 +3,6 @@ class PointTime < ActiveRecord::Base
   has_many :hours
   has_many :days
   has_many :weeks
+  has_many :months
   has_many :years
 end
