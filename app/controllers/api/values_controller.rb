@@ -5,7 +5,9 @@ class Api::ValuesController < ApplicationController
     end_time = DateTime.new(now.year, now.month, now.day, now.hour, now.minute)
     start_time = get_start_time(end_time)
     
-    response = []
+    graph_data = []
+    statistics = []
+    
     zones = Zone.all.includes(:inverters)
     zones.each do |zone|
       tab = []
@@ -18,22 +20,20 @@ class Api::ValuesController < ApplicationController
         tab.push([key, value.round(2)])
       end
       
-      response.push({name: zone.name, data: tab})
+      graph_data.push({name: zone.name, data: tab})
+      
+      max = hash.empty? ? 0.0 : hash.values.max
+      min = hash.empty? ? 0.0 : hash.values.min
+      average = hash.empty? ? 0.0 : hash.values.sum / hash.length
+      
+      statistics.push({name: zone.name, max: max.round(2), min: min.round(2), average: average.round(2)})
     end
     
+    response = { data: graph_data, statistics: statistics }
     render json: response
   end
   
   def lastpoint
-    #total = 0
-    #time = Hour.last.point_time
-    #if (params[:inverter] && params[:inverter].to_i > 0)
-    #  total = time.point_datas.where(inverter_id: params[:inverter]).last.value
-    #else
-    #  time.point_datas.each do |data|
-    #    total += data.value
-    #  end
-    #end
     response = []
     
     time = Hour.last.point_time
@@ -101,54 +101,6 @@ class Api::ValuesController < ApplicationController
       end
     end
     PointTime.joins(period.to_sym, :point_datas).where(time: start_time..end_time, point_datas: { inverter_id: inverter.id }).includes(period.to_sym, :point_datas)
-  end
-  
-  def get_hourly_data
-    now = DateTime.now
-    end_time = DateTime.new(now.year, now.month, now.day, now.hour, now.minute)
-    start_time = end_time - 1.hour
-    
-    times = PointTime.includes(:hours, :point_datas).where(time: start_time..end_time)
-    if (params[:inverter] && params[:inverter].to_i > 0)
-      times = times.where(point_datas: { inverter_id: params[:inverter] })
-    end
-    
-    response = []
-    times.each do |time|
-      total = 0
-      if time.hours.length == 1
-        time.point_datas.each do |data|
-          total += data.value
-        end
-        response.push([(time.time.to_f * 1000).to_i, total.round(2)])
-      end
-    end
-    response
-  end
-  
-  def get_daily_data
-    now = DateTime.now
-    end_time = DateTime.new(now.year, now.month, now.day, now.hour, now.minute)
-    start_time = end_time - 1.day
-    
-    times = PointTime.includes(:days, :point_datas).where(time: start_time..end_time)
-    if (params[:inverter] && params[:inverter].to_i > 0)
-      times = times.where(point_datas: { inverter_id: params[:inverter] })
-    end
-    
-    response = []
-    times.each do |time|
-      total = 0
-      if time.days.length == 1
-        time.point_datas.each do |data|
-          total += data.value
-        end
-        response.push([(time.time.to_f * 1000).to_i, total.round(2)])
-      end
-    end
-    response
-  end
-  
-  
+  end  
   
 end
