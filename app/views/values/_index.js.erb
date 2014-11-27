@@ -1,0 +1,79 @@
+function drawChart(data) {
+  Highcharts.setOptions({
+	lang: {
+	  decimalPoint: '.',
+      thousandsSep: "'",
+	}
+  });
+  	
+  var chart = $('#graph').highcharts('StockChart', {
+  rangeSelector: {
+   	enabled: false
+  },
+  navigator: {
+    enabled: false
+  },
+    series: data
+  });
+  <% if params[:period] && params[:period] == 'hourly' %>
+    setInterval(function(){
+      addLastPoint();
+    }, 60000);
+  <% end %>
+}
+  
+function addLastPoint() {
+  $.ajax({
+    type: 'GET',
+  	url: 'api/lastpoint?<%= @json_params.to_query %>'
+  }).done(function(data){
+    var i, j, series = $('#graph').highcharts().series;
+    for(i = 0; i < data.length; i++) {
+      for(j = 0; j < series.length; j++) {
+        if (series[j].name == data[i].name) {
+      	  series[j].addPoint(data[i].data, true, true);
+      	}
+      }
+    }
+  });
+}
+  
+function showStats(stats) {
+  var max = '', min = '', average = '', i = 0;
+  	
+  $('#btnMax').text(stats[i].max + ' W');
+  $('#btnMin').text(stats[i].min + ' W');
+  $('#btnAverage').text(stats[i].average + ' W');
+  	
+  for (i; i < stats.length; i++) {
+    max += stats[i].name + ': <span class="label label-success" style="float:right">' + stats[i].max + ' W</span><br/>';
+  	min += stats[i].name + ': <span class="label label-warning" style="float:right">' + stats[i].min + ' W</span><br/>';
+  	average += stats[i].name + ': <span class="label label-primary" style="float:right">' + stats[i].average + ' W</span><br/>';
+  }
+  	
+  $('#btnMax').attr('data-content', max);
+  $('#btnMin').attr('data-content', min);
+  $('#btnAverage').attr('data-content', average);
+  	
+  $('[data-toggle="popover"]').popover({
+    trigger: 'hover',
+    placement: 'bottom'
+  });
+}
+  
+$(function(){
+  $.ajax({
+  	type: 'GET',
+	url: 'api/values?<%= @json_params.to_query %>'
+  }).done(function(data){
+	drawChart(data.data);
+	showStats(data.statistics);
+  });
+	
+  <% if params[:period] %>
+    $('#cbxData').combobox('selectByValue', '<%= params[:period] %>');
+  <% end %>
+  $('.combobox').on('changed.fu.combobox', function (evt, data) {
+    window.location.href = '/?period=' + $('#cbxData').combobox('selectedItem').value;
+  });
+});

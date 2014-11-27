@@ -12,19 +12,19 @@ How setting up and start this application:
 
 * Add inverters and zones in database (with rails console for example, currently no UI to do this)
 
-* Configure cron jobs with whenever (be sure bin/rails has execution rights) and restart cron service
+* Configure cron jobs with whenever gem (be sure bin/rails has execution rights) and restart cron service
 
 * Et voilà :-)
 
 == Screenshot
 
-{http://image.noelshack.com/fichiers/2014/48/1417081706-piko-screenshot.png}
+http://image.noelshack.com/fichiers/2014/48/1417081706-piko-screenshot.png
 
 What does application do:
 
-* Store power data from each inverters every minutes
+* Store power data from each inverters every minutes (hour scale)
 
-* Power average computation every 15 minutes (for day scale), every 2 hours (for week scale), every 8 hours (for month scale) and every day (for year scale)
+* Power average computation every 15 minutes (day scale), every 2 hours (week scale), every 8 hours (month scale) and every day (year scale)
 
 * Average computation is used to improve SQL queries and JS performances
 

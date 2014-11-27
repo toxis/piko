@@ -5,8 +5,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Piko</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="//www.fuelcdn.com/fuelux/3.2.1/css/fuelux.min.css" rel="stylesheet">
@@ -22,5 +20,8 @@
   <div class="container">
   <%= yield %>
   </div>
+  <script type="text/javascript">
+    <%= render params[:action] + '.js', params: params %>
+  </script>
 </body>
 </html>
