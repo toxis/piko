@@ -30,3 +30,7 @@ end
 every 2.hours do
   runner "Week.compute_week"
 end
+
+every 8.hours do
+  runner "Month.compute_month"
+end

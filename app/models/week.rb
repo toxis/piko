@@ -28,7 +28,7 @@ class Week < ActiveRecord::Base
     end
     
     point_time = PointTime.create(
-      time: end_time
+      time: end_time - 1.hour
     )
     
     average.each do |key, value|

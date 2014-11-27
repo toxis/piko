@@ -1,5 +1,7 @@
-<div class="row">
-  <div class="col-md-10"></div>
+<div class="row" style="padding-top: 20px;">
+  <div class="col-md-10">
+  	<img src="http://ingenierie.he-arc.ch/sites/all/themes/Ingenierie/css/img/ING_HE-ARC_logo.jpg" class="img-responsive" />
+  </div>
   <div class="col-md-2">
   	<strong>Échelle:</strong>
   	<div class="input-group input-append dropdown combobox" data-initialize="combobox" id="cbxData">
@@ -9,7 +11,7 @@
 	    <ul class="dropdown-menu dropdown-menu-right">
 	      <li data-value="hourly" data-selected="true"><a href="#">1h (temps réel)</a></li>
 	      <li data-value="daily"><a href="#">1 jour</a></li>
-	      <li data-value="weekly"><a href="#">1 semaine (TODO)</a></li>
+	      <li data-value="weekly"><a href="#">1 semaine</a></li>
 	      <li data-value="monthly"><a href="#">1 mois (TODO)</a></li>
 	      <li data-value="yearly"><a href="#">1 année (TODO)</a></li>
 	    </ul>
@@ -20,7 +22,7 @@
 
 <div class="row">
   <div class="col-md-12">
-  	<h2><%= @title %></h2>
+  	<h3><%= @title %></h3>
   	<div id="graph"></div>
   </div>
 </div>

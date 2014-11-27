@@ -15,7 +15,12 @@ class ValuesController < ApplicationController
   
   def week
     Week.compute_week
-    render text: 'end'
+    render text: 'Week computed'
+  end
+  
+  def month
+    Month.compute_month
+    render text: 'Month computed'
   end
   
 end

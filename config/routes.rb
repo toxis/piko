@@ -2,7 +2,10 @@ Rails.application.routes.draw do
   
   root 'values#index'
   
-  get 'week' => 'values#week'
+  if Rails.env.development?
+    get 'week' => 'values#week'
+    get 'month' => 'values#month'
+  end
   
   namespace :api do
     get 'values' => 'values#json'
