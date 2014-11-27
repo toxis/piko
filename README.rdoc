@@ -1,28 +1,37 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+How setting up and start this application:
 
-Things you may want to cover:
+* Have at least one piko inverter from Kostal (http://www.kostal-solar-electric.com/)
 
-* Ruby version
+* You can access it through your network by a fixed IP address and you know username and password to read data
 
-* System dependencies
+* Create and configure database.yml and secrets.yml (in config folder)
 
-* Configuration
+* Create database and run migrations
 
-* Database creation
+* Add inverters and zones in database (with rails console for example, currently no UI to do this)
 
-* Database initialization
+* Configure cron jobs with whenever (be sure bin/rails has execution rights) and restart cron service
 
-* How to run the test suite
+* Et voilà :-)
 
-* Services (job queues, cache servers, search engines, etc.)
+== Screenshot
 
-* Deployment instructions
+{http://image.noelshack.com/fichiers/2014/48/1417081706-piko-screenshot.png}
 
-* ...
+What does application do:
 
+* Store power data from each inverters every minutes
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+* Power average computation every 15 minutes (for day scale), every 2 hours (for week scale), every 8 hours (for month scale) and every day (for year scale)
+
+* Average computation is used to improve SQL queries and JS performances
+
+== Frontend
+
+* Bootstrap 3.2
+
+* FuelUX
+
+* Highcharts
