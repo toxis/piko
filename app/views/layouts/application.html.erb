@@ -21,7 +21,7 @@
   <%= yield %>
   </div>
   <script type="text/javascript">
-    <%= render params[:action] + '.js', params: params %>
+    <%= render params[:action] + '.js' if lookup_context.template_exists?("#{params[:action] + '.js'}", controller._prefixes, :partial) %>
   </script>
 </body>
 </html>

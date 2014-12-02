@@ -34,3 +34,7 @@ end
 every 8.hours do
   runner "Month.compute_month"
 end
+
+every 1.day do
+  runner "Year.compute_year"
+end

@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20141120151429) do
     t.datetime "updated_at"
   end
 
-  add_index "days", ["point_time_id"], name: "index_days_on_point_times_id", using: :btree
+  add_index "days", ["point_time_id"], name: "index_days_on_point_time_id", using: :btree
 
   create_table "hours", force: true do |t|
     t.integer  "point_time_id"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20141120151429) do
     t.datetime "updated_at"
   end
 
-  add_index "hours", ["point_time_id"], name: "index_hours_on_point_times_id", using: :btree
+  add_index "hours", ["point_time_id"], name: "index_hours_on_point_time_id", using: :btree
 
   create_table "inverters", force: true do |t|
     t.string   "name"
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 20141120151429) do
     t.datetime "updated_at"
   end
 
-  add_index "months", ["point_time_id"], name: "index_months_on_point_times_id", using: :btree
+  add_index "months", ["point_time_id"], name: "index_months_on_point_time_id", using: :btree
 
   create_table "point_datas", force: true do |t|
     t.integer  "inverter_id"
@@ -58,8 +58,8 @@ ActiveRecord::Schema.define(version: 20141120151429) do
     t.datetime "updated_at"
   end
 
-  add_index "point_datas", ["inverter_id"], name: "index_point_data_on_inverter_id", using: :btree
-  add_index "point_datas", ["point_time_id"], name: "index_point_data_on_point_times_id", using: :btree
+  add_index "point_datas", ["inverter_id"], name: "index_point_datas_on_inverter_id", using: :btree
+  add_index "point_datas", ["point_time_id"], name: "index_point_datas_on_point_time_id", using: :btree
 
   create_table "point_times", force: true do |t|
     t.datetime "time"
@@ -73,17 +73,7 @@ ActiveRecord::Schema.define(version: 20141120151429) do
     t.datetime "updated_at"
   end
 
-  add_index "weeks", ["point_time_id"], name: "index_weeks_on_point_times_id", using: :btree
-
-  create_table "who", force: true do |t|
-    t.string  "firstname",   limit: 40
-    t.string  "lastname",    limit: 40
-    t.integer "workshop_id"
-  end
-
-  create_table "workshops", force: true do |t|
-    t.time "hr"
-  end
+  add_index "weeks", ["point_time_id"], name: "index_weeks_on_point_time_id", using: :btree
 
   create_table "years", force: true do |t|
     t.integer  "point_time_id"
@@ -91,7 +81,7 @@ ActiveRecord::Schema.define(version: 20141120151429) do
     t.datetime "updated_at"
   end
 
-  add_index "years", ["point_time_id"], name: "index_years_on_point_times_id", using: :btree
+  add_index "years", ["point_time_id"], name: "index_years_on_point_time_id", using: :btree
 
   create_table "zones", force: true do |t|
     t.string   "name"

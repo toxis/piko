@@ -24,4 +24,9 @@ class ValuesController < ApplicationController
     render text: 'Month computed'
   end
   
+  def year
+    Year.compute_year
+    render text: 'Year computed'
+  end
+  
 end

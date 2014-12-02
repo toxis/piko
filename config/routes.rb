@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   if Rails.env.development?
     get 'week' => 'values#week'
     get 'month' => 'values#month'
+    get 'year' => 'values#year'
   end
   
   namespace :api do
