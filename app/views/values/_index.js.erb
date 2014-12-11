@@ -21,6 +21,9 @@ function afterSetExtremes(e) {
 }
 
 function drawChart(data) {
+  var d = new Date();
+  data[0].data = [].concat(data[0].data, [[Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes() + 1), null, null, null, null]]); // max value of navigator is current time (for every zoom)
+  
   Highcharts.setOptions({
 	lang: {
 	  decimalPoint: '.',
@@ -32,7 +35,7 @@ function drawChart(data) {
   	navigator: {
   	  adaptToUpdatedData: false,
   	  series: {
-  	  	data: data[0].data
+  	  	data: data[0].data // only one serie!
   	  }
   	},
   	rangeSelector: {
