@@ -1,9 +1,9 @@
 class Api::ValuesController < ApplicationController
   
   def json
-    now = DateTime.now
-    end_time = DateTime.new(now.year, now.month, now.day, now.hour, now.minute)
-    start_time = get_start_time(end_time)
+    # Time instead datetime for range computation
+    end_time = params[:end] ? Time.at(params[:end].to_f / 1000) : Time.now
+    start_time = params[:start] ? Time.at(params[:start].to_f / 1000) : Time.new(2014, 12, 2, 12, 0) # first year point (in our database)
     
     graph_data = []
     statistics = []
@@ -53,25 +53,8 @@ class Api::ValuesController < ApplicationController
   
   private
   
-  def get_start_time(end_time)
-    diff = 1.hour
-    if params[:period]
-      case params[:period]
-      when 'daily'
-        diff = 1.day
-      when 'weekly'
-        diff = 1.week
-      when 'monthly'
-        diff = 1.month
-      when 'yearly'
-        diff = 1.month
-      end
-    end
-    end_time - diff
-  end
-  
   def computation(hash, start_time, end_time, inverter)
-    times = get_times start_time, end_time, inverter #PointTime.includes(:hours, :point_datas).where(time: start_time..end_time, point_datas: { inverter_id: inverter.id })
+    times = get_times start_time, end_time, inverter
     times.each do |t|
       value = 0
       if hash.has_key?((t.time.to_f * 1000).to_i)
@@ -87,20 +70,25 @@ class Api::ValuesController < ApplicationController
   end
   
   def get_times(start_time, end_time, inverter)
-    period = 'hours'
-    if params[:period]
-      case params[:period]
-      when 'daily'
-        period = 'days'
-      when 'weekly'
-        period = 'weeks'
-      when 'monthly'
-        period = 'months'
-      when 'yearly'
-        period = 'years'
-      end
+    range = end_time - start_time
+    
+    if range < 8.hours
+      period = 'hours'
+    elsif range < 1.week
+      period = 'days'
+    elsif range < 1.month
+      period = 'weeks'
+    elsif range < 1.year
+      period = 'months'
+    else
+      period = 'years'
     end
-    PointTime.joins(period.to_sym, :point_datas).where(time: start_time..end_time, point_datas: { inverter_id: inverter.id }).includes(period.to_sym, :point_datas)
-  end  
+    
+    # Convert time to datetime for correct UTC queries
+    start_date = DateTime.new(start_time.year, start_time.month, start_time.day, start_time.hour, start_time.min)
+    end_date = DateTime.new(end_time.year, end_time.month, end_time.day, end_time.hour, end_time.min)
+    
+    PointTime.joins(period.to_sym, :point_datas).where(time: start_date..end_date, point_datas: { inverter_id: inverter.id }).includes(period.to_sym, :point_datas)
+  end
   
 end

@@ -1,3 +1,25 @@
+function afterSetExtremes(e) {
+  var chart = $('#graph').highcharts();
+  
+  chart.showLoading("Chargement des données");
+  $('#btnMax').text('...');
+  $('#btnMin').text('...');
+  $('#btnAverage').text('...');
+  
+  $.getJSON("api/values?start=" + Math.round(e.min) + "&end=" + Math.round(e.max), function(data){
+  	var i, j, series = chart.series, d = data.data;
+    for(i = 0; i < d.length; i++) {
+      for(j = 0; j < series.length; j++) {
+        if (series[j].name == d[i].name) {
+          series[j].setData(d[i].data);
+      	}
+      }
+    }
+  	chart.hideLoading();
+  	showStats(data.statistics);
+  });
+}
+
 function drawChart(data) {
   Highcharts.setOptions({
 	lang: {
@@ -7,25 +29,63 @@ function drawChart(data) {
   });
   	
   var chart = $('#graph').highcharts('StockChart', {
-  rangeSelector: {
-   	enabled: false
-  },
-  navigator: {
-    enabled: false
-  },
+  	navigator: {
+  	  adaptToUpdatedData: false,
+  	  series: {
+  	  	data: data[0].data
+  	  }
+  	},
+  	rangeSelector: {
+  	  buttons: [{
+  	  	type: 'hour',
+  	  	count: 3,
+  	  	text: '3 heures'
+  	  }, {
+  	  	type: 'day',
+  	  	count: 1,
+  	  	text: '1 jour'
+  	  }, {
+  	  	type: 'week',
+  	  	count: 1,
+  	  	text: '1 semaine'
+  	  }, {
+  	  	type: 'month',
+  	  	count: 1,
+  	  	text: '1 mois'
+  	  }, {
+  	  	type: 'year',
+  	  	count: 1,
+  	  	text: '1 année'
+  	  }, {
+  	  	type: 'all',
+  	  	text: 'Tout'
+  	  }],
+  	  buttonTheme: {
+        width: null
+      },
+  	  inputEnabled: false,
+  	  selected: 5
+  	},
+  	xAxis: {
+  	  events: {
+  	  	afterSetExtremes: afterSetExtremes
+  	  },
+  	  minRange: 3600*1000 // 1 hour
+  	},
+  	yAxis: {
+  	  floor: 0
+  	},
+  	scrollbar: {
+  	  liveRedraw: false
+  	},
     series: data
   });
-  <% if params[:period] && params[:period] == 'hourly' %>
-    setInterval(function(){
-      addLastPoint();
-    }, 60000);
-  <% end %>
 }
   
 function addLastPoint() {
   $.ajax({
     type: 'GET',
-  	url: 'api/lastpoint?<%= @json_params.to_query %>'
+  	url: 'api/lastpoint'
   }).done(function(data){
     var i, j, series = $('#graph').highcharts().series;
     for(i = 0; i < data.length; i++) {
@@ -54,26 +114,18 @@ function showStats(stats) {
   $('#btnMax').attr('data-content', max);
   $('#btnMin').attr('data-content', min);
   $('#btnAverage').attr('data-content', average);
-  	
-  $('[data-toggle="popover"]').popover({
-    trigger: 'hover',
-    placement: 'bottom'
-  });
 }
   
 $(function(){
   $.ajax({
   	type: 'GET',
-	url: 'api/values?<%= @json_params.to_query %>'
+	url: 'api/values'
   }).done(function(data){
 	drawChart(data.data);
 	showStats(data.statistics);
-  });
-	
-  <% if params[:period] %>
-    $('#cbxData').combobox('selectByValue', '<%= params[:period] %>');
-  <% end %>
-  $('.combobox').on('changed.fu.combobox', function (evt, data) {
-    window.location.href = '/?period=' + $('#cbxData').combobox('selectedItem').value;
+	$('[data-toggle="popover"]').popover({
+      trigger: 'hover',
+      placement: 'top'
+    });
   });
 });
