@@ -22,9 +22,10 @@ class Api::ValuesController < ApplicationController
       
       graph_data.push({name: zone.name, data: tab})
       
-      max = hash.empty? ? 0.0 : hash.values.max
-      min = hash.empty? ? 0.0 : hash.values.min
-      average = hash.empty? ? 0.0 : hash.values.sum / hash.length
+      val = hash.values.delete_if { |v| v.nan? }
+      max = val.empty? ? 0.0 : val.max
+      min = val.empty? ? 0.0 : val.min
+      average = val.empty? ? 0.0 : val.sum / val.length
       
       statistics.push({name: zone.name, max: max.round(2), min: min.round(2), average: average.round(2)})
     end
