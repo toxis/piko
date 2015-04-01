@@ -28,6 +28,10 @@ What does application do:
 
 * Average computation is used to improve SQL queries and JS performances
 
+== Live demo
+
+http://ne-ca2-labinfo2.he-arc.ch
+
 == Frontend
 
 * Bootstrap 3.2
